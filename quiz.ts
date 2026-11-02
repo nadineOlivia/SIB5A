@@ -148,7 +148,7 @@ class SuperStar extends PowerUp {
   applyEffect(mario: Mario): string {
     mario.invincible = true;
 
-    return "Mario mendapatkan Super Star! Mario sekarang kebal.";
+    return "Mario kebal! Serangan tidak berpengaruh.";
   }
 }
 
