@@ -1,148 +1,191 @@
+// =====================================================================
+//  SOAL: Mario Bros dengan OOP (TypeScript)
+// =====================================================================
+//  Mario memiliki atribut: HP, speed, positionX, positionY, invincible,
+//  currentForm. Mario dapat berubah menjadi 3 form: 'mario',
+//  'super mario', dan 'fire mario'.
+//
+//  Default: HP = 1, speed = 5, currentForm = 'mario', invincible = false,
+//           positionX = 0, positionY = 0
+//
+//  1. SuperMushroom (Jamur): Mario menjadi Super Mario, HP + 1.
+//  2. FireFlower (Bunga): Mario menjadi Fire Mario, HP + 1,
+//     dan dapat menembakkan bola api.
+//  3. SuperStar (Bintang): Mario kebal terhadap serangan.
+//  4. Diserang: HP - 1 dan kembali ke form 'mario'.
+//     Jika sedang kebal, serangan tidak berpengaruh.
+//  5. Bergerak ke kanan: positionX + speed.
+//  6. Bergerak ke kiri: positionX - speed.
+//
+//  Buat class, attribute, method, dan object.
+//  Terapkan inheritance dan polymorphism.
+// =====================================================================
+
+// Kerjakan Quiznya Disini
+
+// ==================================================
+// 1. PARENT CLASS
+// ==================================================
 class Mario {
-    HP: number;
-    speed: number;
-    positionX: number;
-    positionY: number;
-    invincible: boolean;
-    currentForm: "mario" | "super mario" | "fire mario";
 
-    constructor() {
-        this.HP = 1;
-        this.speed = 5;
-        this.positionX = 0;
-        this.positionY = 0;
-        this.invincible = false;
-        this.currentForm = "mario";
+  // ATTRIBUTE / PROPERTIES
+  hp: number;
+  speed: number;
+  positionX: number;
+  positionY: number;
+  invincible: boolean;
+  currentForm: string;
+
+  // CONSTRUCTOR
+  constructor() {
+    this.hp = 1;
+    this.speed = 5;
+    this.positionX = 0;
+    this.positionY = 0;
+    this.invincible = false;
+    this.currentForm = "mario";
+  }
+
+  // METHOD 1
+  collectItem(item: PowerUp) {
+    return item.applyEffect(this);
+  }
+
+  // METHOD 2
+  takeDamage() {
+    if (this.invincible) {
+      return "Mario kebal! Serangan tidak berpengaruh.";
     }
 
-    takePowerUp(powerUp: PowerUp): void {
-        powerUp.apply(this);
+    this.hp -= 1;
+    this.currentForm = "mario";
+    return "Mario terkena serangan! HP berkurang 1.";
+  }
+
+  // METHOD 3
+  moveRight() {
+    this.positionX += this.speed;
+    return `Mario bergerak ke kanan: ${this.positionX}`;
+  }
+
+  // METHOD 4
+  moveLeft() {
+    this.positionX -= this.speed;
+    return `Mario bergerak ke kiri: ${this.positionX}`;
+  }
+
+  // METHOD 5
+  shootFireball() {
+    if (this.currentForm === "fire mario") {
+      return "Mario menembakkan bola api!";
     }
 
-    takeDamage(): void {
-        if (this.invincible) {
-            console.log("mario kebal! serangan tidak berpengaruh.");
-            return;
-        }
-        
-        this.HP -= 1;
-        this.currentForm ="mario"
+    return "Mario belum memiliki kekuatan bola api.";
+  }
 
-        console.log(`mario diserang! HP: ${this.HP}`);
-    }
-
-    moveRight(): void {
-        this.positionX += this.speed;
-
-        console.log(`mario bergerak ke kanan. Position X: ${this.positionX}`);
-    }
-
-    moveleft(): void {
-        this.positionX -= this.speed;
-
-        console.log(`matio bergerak ke kiri. Position X: ${this.positionX}`);
-    }
-
-    shootFireball(): void {
-        if (this.currentForm === "fire mario") {
-            console.log("fire mario menembakkan bola api");
-        }else{
-            console.log("mario harus menjadi fire mario untuk menembak.");
-        }
-    }
-
-    showStatus(): void {
-        console.log("===== sTATUS MARIO =====");
-        console.log(`HP: ${this.HP}`);
-        console.log(`Speed: ${this.speed}`);
-        console.log(`Position X: ${this.positionX}`);
-        console.log(`Position Y: ${this.positionY}`);
-        console.log(`Invincible: ${this.invincible}`);
-        console.log(`Current Form: ${this.currentForm}`);
-    }
+  // METHOD 6
+  getStatus() {
+  return `
+    HP          : ${this.hp}
+    Speed       : ${this.speed}
+    Form        : ${this.currentForm}
+    Position X  : ${this.positionX}
+    Position Y  : ${this.positionY}
+    Invincible  : ${this.invincible}
+`;
+}
 }
 
-// Class induk power-up
-abstract class PowerUp {
-    name: string;
 
-    constructor(name: string){
-        this.name = name;
-    }
+// ==================================================
+// 2. PARENT CLASS POWERUP
+// ==================================================
+class PowerUp {
 
-    abstract apply(mario: Mario): void;
+  // METHOD
+  applyEffect(mario: Mario): string {
+    return "Mario mendapatkan item.";
+  }
 }
 
-// inheritance: SuperMushroom mewarisi PowerUp
+
+// ==================================================
+// 3. CHILD CLASS - SUPERMUSHROOM
+// ==================================================
 class SuperMushroom extends PowerUp {
-    constructor() {
-        super("Super Mushroom");
-    }
 
-    apply(mario: Mario): void {
-        mario.currentForm ="super mario";
-        mario.HP += 1;
+  // POLYMORPHISM (OVERRIDING METHOD)
+  applyEffect(mario: Mario): string {
+    mario.hp += 1;
+    mario.currentForm = "super mario";
 
-        console.log(`mario menjadin Super Mario! HP: ${mario.HP}`);
-    }
+    return "Mario mendapatkan Super Mushroom! HP +1.";
+  }
 }
 
-//inheritance: FireFlower mewarisi PowerUp
+
+// ==================================================
+// 4. CHILD CLASS - FIREFLOWER
+// ==================================================
 class FireFlower extends PowerUp {
-    constructor() {
-        super("Fire Flower");
-    }
 
-    apply(mario: Mario): void {
-        mario.currentForm = "fire mario";
-        mario.HP += 1;
+  // POLYMORPHISM (OVERRIDING METHOD)
+  applyEffect(mario: Mario): string {
+    mario.hp += 1;
+    mario.currentForm = "fire mario";
 
-        console.log(`mario menjadi Fire Mario! HP: ${mario.HP}`);
-    }
+    return "Mario mendapatkan Fire Flower! HP +1.";
+  }
 }
 
-// Inheritance: SuperStar mewarisi PowerUp
+
+// ==================================================
+// 5. CHILD CLASS - SUPERSTAR
+// ==================================================
 class SuperStar extends PowerUp {
-    constructor() {
-        super("Super Star");
-    }
 
-    apply(mario: Mario): void {
-        mario.invincible = true;
+  // POLYMORPHISM (OVERRIDING METHOD)
+  applyEffect(mario: Mario): string {
+    mario.invincible = true;
 
-
-        console.log("mario menjadi kebal terhadap serangan!");
-    }
+    return "Mario mendapatkan Super Star! Mario sekarang kebal.";
+  }
 }
 
-// membuat object
+
+// ==================================================
+// 6. OBJECT / INSTANCE
+// ==================================================
 const mario = new Mario();
 const mushroom = new SuperMushroom();
 const flower = new FireFlower();
 const star = new SuperStar();
 
-// status awal
-mario.showStatus();
 
-// bergerak ke kanan dan ke kiri
-mario.moveRight();
-mario.moveleft();
+// ==================================================
+// 7. PEMANGGILAN METHOD / OUTPUT
+// ==================================================
+console.log("Status Awal:");
+console.log(mario.getStatus());
 
-// Mengambil jamur
-mario.takePowerUp(mushroom);
-mario.showStatus();
+console.log("\n1. Super Mushroom:");
+console.log(mario.collectItem(mushroom));
+console.log(mario.getStatus());
 
-// Mengambil bunga dan menembakkan bola api
-mario.takePowerUp(flower);
-mario.shootFireball();
+console.log("\n2. Fire Flower:");
+console.log(mario.collectItem(flower));
+console.log(mario.shootFireball());
+console.log(mario.getStatus());
 
-// Diserang Saat belum kebal
-mario.takeDamage();
-mario.showStatus();
+console.log("\n3. Super Star:");
+console.log(mario.collectItem(star));
+console.log(mario.getStatus());
 
-// mengambil bintang
-mario.takePowerUp(star);
+console.log("\n4. Mario Diserang:");
+console.log(mario.takeDamage());
+console.log(mario.getStatus());
 
-// Diserang saat kebal
-mario.takeDamage();
-mario.showStatus();
+console.log("\n5. Mario Bergerak:");
+console.log(mario.moveRight());
+console.log(mario.moveLeft());
+console.log(mario.getStatus());
